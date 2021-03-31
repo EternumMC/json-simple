@@ -126,4 +126,45 @@ public class JSONObject extends HashMap<Object, Object> implements Map<Object, O
     public String toString() {
         return toJSONString();
     }
+
+    public String getString(String key) {
+        return this.get(key).toString();
+    }
+
+    public boolean getBoolean(String key) {
+        return Boolean.parseBoolean(this.get(key).toString());
+    }
+
+    public byte getByte(String key) {
+        return Byte.parseByte(this.get(key).toString());
+    }
+
+    public short getShort(String key) {
+        return Short.parseShort(this.get(key).toString());
+    }
+
+    public int getInt(String key) {
+        return Integer.parseInt(this.get(key).toString());
+    }
+
+    public long getLong(String key) {
+        return Long.parseLong(this.get(key).toString());
+    }
+
+    public float getFloat(String key) {
+        return Float.parseFloat(this.get(key).toString());
+    }
+
+    public double getDouble(String key) {
+        return Double.parseDouble(this.get(key).toString());
+    }
+
+    public JSONObject child(String key) {
+        return (JSONObject) this.get(key);
+    }
+
+    public JSONArray array(String key) {
+        return (JSONArray) this.get(key);
+    }
+
 }

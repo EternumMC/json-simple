@@ -52,7 +52,7 @@ public class JSONArray extends ArrayList<Object> implements JSONAware, JSONStrea
 
         boolean first = true;
         Iterator<Object> iterator = collection.iterator();
-		
+
         out.write('[');
         while (iterator.hasNext()) {
             if (first)
@@ -376,4 +376,45 @@ public class JSONArray extends ArrayList<Object> implements JSONAware, JSONStrea
     public String toString() {
         return toJSONString();
     }
+
+    public String getString(int index) {
+        return this.get(index).toString();
+    }
+
+    public boolean getBoolean(int index) {
+        return Boolean.parseBoolean(this.get(index).toString());
+    }
+
+    public byte getByte(int index) {
+        return Byte.parseByte(this.get(index).toString());
+    }
+
+    public short getShort(int index) {
+        return Short.parseShort(this.get(index).toString());
+    }
+
+    public int getInt(int index) {
+        return Integer.parseInt(this.get(index).toString());
+    }
+
+    public long getLong(int index) {
+        return Long.parseLong(this.get(index).toString());
+    }
+
+    public float getFloat(int index) {
+        return Float.parseFloat(this.get(index).toString());
+    }
+
+    public double getDouble(int index) {
+        return Double.parseDouble(this.get(index).toString());
+    }
+
+    public JSONObject child(int index) {
+        return (JSONObject) this.get(index);
+    }
+
+    public JSONArray array(int index) {
+        return (JSONArray) this.get(index);
+    }
+
 }
