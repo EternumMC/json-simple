@@ -3,7 +3,8 @@ package org.json.simple.parser;
 /**
  * ParseException explains why and where the error occurs in source JSON text.
  *
- * @author FangYidong<fangyidong @ yahoo.com.cn>
+ * @author FangYidong<fangyidong@yahoo.com.cn>
+ * @author l_MrBoom_l<admin@epserv.ru>
  */
 public class ParseException extends Exception {
     public static final int ERROR_UNEXPECTED_CHAR = 0;

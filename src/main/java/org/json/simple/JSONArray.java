@@ -14,7 +14,8 @@ import java.util.Iterator;
 /**
  * A JSON array. JSONObject supports java.util.List interface.
  *
- * @author FangYidong<fangyidong @ yahoo.com.cn>
+ * @author FangYidong<fangyidong@yahoo.com.cn>
+ * @author l_MrBoom_l<admin@epserv.ru>
  */
 public class JSONArray extends ArrayList<Object> implements JSONAware, JSONStreamAware {
     private static final long serialVersionUID = 3957988303675231981L;
