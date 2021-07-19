@@ -4,11 +4,16 @@
  */
 package org.json.simple;
 
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
 import java.io.IOException;
+import java.io.Serial;
 import java.io.StringWriter;
 import java.io.Writer;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Iterator;
 
 /**
@@ -18,6 +23,7 @@ import java.util.Iterator;
  * @author l_MrBoom_l<admin@epserv.ru>
  */
 public class JSONArray extends ArrayList<Object> implements JSONAware, JSONStreamAware {
+    @Serial
     private static final long serialVersionUID = 3957988303675231981L;
 
     /**
@@ -33,7 +39,7 @@ public class JSONArray extends ArrayList<Object> implements JSONAware, JSONStrea
      *
      * @param c the collection whose elements are to be placed into this JSONArray
      */
-    public JSONArray(Collection c) {
+    public JSONArray(@NotNull Collection<?> c) {
         super(c);
     }
 
@@ -43,16 +49,16 @@ public class JSONArray extends ArrayList<Object> implements JSONAware, JSONStrea
      *
      * @param collection Collection to use as input
      * @param out        Writer to use as output
-     * @see org.json.simple.JSONValue#writeJSONString(Object, Writer)
+     * @see JSONValue#writeJSONString(Object, Writer)
      */
-    public static void writeJSONString(Collection<Object> collection, Writer out) throws IOException {
+    public static void writeJSONString(@Nullable Collection<?> collection, @NotNull Writer out) throws IOException {
         if (collection == null) {
             out.write("null");
             return;
         }
 
         boolean first = true;
-        Iterator<Object> iterator = collection.iterator();
+        Iterator<?> iterator = collection.iterator();
 
         out.write('[');
         while (iterator.hasNext()) {
@@ -78,9 +84,10 @@ public class JSONArray extends ArrayList<Object> implements JSONAware, JSONStrea
      *
      * @param collection Collection to use as input
      * @return JSON text, or "null" if list is null.
-     * @see org.json.simple.JSONValue#toJSONString(Object)
+     * @see JSONValue#toJSONString(Object)
      */
-    public static String toJSONString(Collection<Object> collection) {
+    @NotNull
+    public static String toJSONString(@Nullable Collection<Object> collection) {
         final StringWriter writer = new StringWriter();
 
         try {
@@ -92,7 +99,7 @@ public class JSONArray extends ArrayList<Object> implements JSONAware, JSONStrea
         }
     }
 
-    public static void writeJSONString(byte[] array, Writer out) throws IOException {
+    public static void writeJSONString(byte[] array, @NotNull Writer out) throws IOException {
         if (array == null) {
             out.write("null");
         } else if (array.length == 0) {
@@ -110,6 +117,7 @@ public class JSONArray extends ArrayList<Object> implements JSONAware, JSONStrea
         }
     }
 
+    @NotNull
     public static String toJSONString(byte[] array) {
         final StringWriter writer = new StringWriter();
 
@@ -122,7 +130,7 @@ public class JSONArray extends ArrayList<Object> implements JSONAware, JSONStrea
         }
     }
 
-    public static void writeJSONString(short[] array, Writer out) throws IOException {
+    public static void writeJSONString(short[] array, @NotNull Writer out) throws IOException {
         if (array == null) {
             out.write("null");
         } else if (array.length == 0) {
@@ -140,6 +148,7 @@ public class JSONArray extends ArrayList<Object> implements JSONAware, JSONStrea
         }
     }
 
+    @NotNull
     public static String toJSONString(short[] array) {
         final StringWriter writer = new StringWriter();
 
@@ -152,7 +161,7 @@ public class JSONArray extends ArrayList<Object> implements JSONAware, JSONStrea
         }
     }
 
-    public static void writeJSONString(int[] array, Writer out) throws IOException {
+    public static void writeJSONString(int[] array, @NotNull Writer out) throws IOException {
         if (array == null) {
             out.write("null");
         } else if (array.length == 0) {
@@ -170,6 +179,7 @@ public class JSONArray extends ArrayList<Object> implements JSONAware, JSONStrea
         }
     }
 
+    @NotNull
     public static String toJSONString(int[] array) {
         final StringWriter writer = new StringWriter();
 
@@ -182,7 +192,7 @@ public class JSONArray extends ArrayList<Object> implements JSONAware, JSONStrea
         }
     }
 
-    public static void writeJSONString(long[] array, Writer out) throws IOException {
+    public static void writeJSONString(long[] array, @NotNull Writer out) throws IOException {
         if (array == null) {
             out.write("null");
         } else if (array.length == 0) {
@@ -200,6 +210,7 @@ public class JSONArray extends ArrayList<Object> implements JSONAware, JSONStrea
         }
     }
 
+    @NotNull
     public static String toJSONString(long[] array) {
         final StringWriter writer = new StringWriter();
 
@@ -212,7 +223,7 @@ public class JSONArray extends ArrayList<Object> implements JSONAware, JSONStrea
         }
     }
 
-    public static void writeJSONString(float[] array, Writer out) throws IOException {
+    public static void writeJSONString(float[] array, @NotNull Writer out) throws IOException {
         if (array == null) {
             out.write("null");
         } else if (array.length == 0) {
@@ -230,6 +241,7 @@ public class JSONArray extends ArrayList<Object> implements JSONAware, JSONStrea
         }
     }
 
+    @NotNull
     public static String toJSONString(float[] array) {
         final StringWriter writer = new StringWriter();
 
@@ -242,7 +254,7 @@ public class JSONArray extends ArrayList<Object> implements JSONAware, JSONStrea
         }
     }
 
-    public static void writeJSONString(double[] array, Writer out) throws IOException {
+    public static void writeJSONString(double[] array, @NotNull Writer out) throws IOException {
         if (array == null) {
             out.write("null");
         } else if (array.length == 0) {
@@ -260,6 +272,7 @@ public class JSONArray extends ArrayList<Object> implements JSONAware, JSONStrea
         }
     }
 
+    @NotNull
     public static String toJSONString(double[] array) {
         final StringWriter writer = new StringWriter();
 
@@ -272,7 +285,7 @@ public class JSONArray extends ArrayList<Object> implements JSONAware, JSONStrea
         }
     }
 
-    public static void writeJSONString(boolean[] array, Writer out) throws IOException {
+    public static void writeJSONString(boolean[] array, @NotNull Writer out) throws IOException {
         if (array == null) {
             out.write("null");
         } else if (array.length == 0) {
@@ -290,6 +303,7 @@ public class JSONArray extends ArrayList<Object> implements JSONAware, JSONStrea
         }
     }
 
+    @NotNull
     public static String toJSONString(boolean[] array) {
         final StringWriter writer = new StringWriter();
 
@@ -302,7 +316,7 @@ public class JSONArray extends ArrayList<Object> implements JSONAware, JSONStrea
         }
     }
 
-    public static void writeJSONString(char[] array, Writer out) throws IOException {
+    public static void writeJSONString(char[] array, @NotNull Writer out) throws IOException {
         if (array == null) {
             out.write("null");
         } else if (array.length == 0) {
@@ -320,6 +334,7 @@ public class JSONArray extends ArrayList<Object> implements JSONAware, JSONStrea
         }
     }
 
+    @NotNull
     public static String toJSONString(char[] array) {
         final StringWriter writer = new StringWriter();
 
@@ -332,7 +347,7 @@ public class JSONArray extends ArrayList<Object> implements JSONAware, JSONStrea
         }
     }
 
-    public static void writeJSONString(Object[] array, Writer out) throws IOException {
+    public static void writeJSONString(@Nullable Object[] array, @NotNull Writer out) throws IOException {
         if (array == null) {
             out.write("null");
         } else if (array.length == 0) {
@@ -350,7 +365,8 @@ public class JSONArray extends ArrayList<Object> implements JSONAware, JSONStrea
         }
     }
 
-    public static String toJSONString(Object[] array) {
+    @NotNull
+    public static String toJSONString(@Nullable Object[] array) {
         final StringWriter writer = new StringWriter();
 
         try {
@@ -362,24 +378,28 @@ public class JSONArray extends ArrayList<Object> implements JSONAware, JSONStrea
         }
     }
 
-    public void writeJSONString(Writer out) throws IOException {
+    public void writeJSONString(@NotNull Writer out) throws IOException {
         writeJSONString(this, out);
     }
 
+    @NotNull
     public String toJSONString() {
         return toJSONString(this);
     }
 
     /**
      * Returns a string representation of this array. This is equivalent to
-     * calling {@link JSONArray#toJSONString()}.
+     * calling {@link org.json.simple.JSONArray#toJSONString()}.
      */
+    @NotNull
     public String toString() {
         return toJSONString();
     }
 
+    @NotNull
     public String getString(int index) {
-        return this.get(index).toString();
+        String str = String.valueOf(this.get(index));
+        return str == null ? "null" : str;
     }
 
     public boolean getBoolean(int index) {
@@ -410,12 +430,21 @@ public class JSONArray extends ArrayList<Object> implements JSONAware, JSONStrea
         return Double.parseDouble(this.get(index).toString());
     }
 
+    @Nullable
     public JSONObject child(int index) {
         return (JSONObject) this.get(index);
     }
 
+    @Nullable
     public JSONArray array(int index) {
         return (JSONArray) this.get(index);
+    }
+
+    @SafeVarargs
+    public static <E> JSONArray of(E... elements) {
+        JSONArray jsonArray = new JSONArray();
+        Collections.addAll(jsonArray, elements);
+        return jsonArray;
     }
 
 }

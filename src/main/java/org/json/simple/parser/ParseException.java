@@ -1,5 +1,11 @@
 package org.json.simple.parser;
 
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
+import java.io.Serial;
+import java.util.Objects;
+
 /**
  * ParseException explains why and where the error occurs in source JSON text.
  *
@@ -10,8 +16,10 @@ public class ParseException extends Exception {
     public static final int ERROR_UNEXPECTED_CHAR = 0;
     public static final int ERROR_UNEXPECTED_TOKEN = 1;
     public static final int ERROR_UNEXPECTED_EXCEPTION = 2;
+    @Serial
     private static final long serialVersionUID = -7880698968187728547L;
     private int errorType;
+    @Nullable
     private Object unexpectedObject;
     private int position;
 
@@ -19,11 +27,11 @@ public class ParseException extends Exception {
         this(-1, errorType, null);
     }
 
-    public ParseException(int errorType, Object unexpectedObject) {
+    public ParseException(int errorType, @Nullable Object unexpectedObject) {
         this(-1, errorType, unexpectedObject);
     }
 
-    public ParseException(int position, int errorType, Object unexpectedObject) {
+    public ParseException(int position, int errorType, @Nullable Object unexpectedObject) {
         this.position = position;
         this.errorType = errorType;
         this.unexpectedObject = unexpectedObject;
@@ -56,31 +64,22 @@ public class ParseException extends Exception {
      * ERROR_UNEXPECTED_EXCEPTION	java.lang.Exception
      * @see org.json.simple.parser.Yytoken
      */
+    @Nullable
     public Object getUnexpectedObject() {
         return unexpectedObject;
     }
 
-    public void setUnexpectedObject(Object unexpectedObject) {
+    public void setUnexpectedObject(@Nullable Object unexpectedObject) {
         this.unexpectedObject = unexpectedObject;
     }
 
+    @NotNull
     public String getMessage() {
-        StringBuilder sb = new StringBuilder();
-
-        switch (errorType) {
-            case ERROR_UNEXPECTED_CHAR:
-                sb.append("Unexpected character (").append(unexpectedObject).append(") at position ").append(position).append(".");
-                break;
-            case ERROR_UNEXPECTED_TOKEN:
-                sb.append("Unexpected token ").append(unexpectedObject).append(" at position ").append(position).append(".");
-                break;
-            case ERROR_UNEXPECTED_EXCEPTION:
-                sb.append("Unexpected exception at position ").append(position).append(": ").append(unexpectedObject);
-                break;
-            default:
-                sb.append("Unknown error at position ").append(position).append(".");
-                break;
-        }
-        return sb.toString();
+        return switch (errorType) {
+            case ERROR_UNEXPECTED_CHAR -> String.format("Unexpected character (%s) at position %d.", Objects.requireNonNullElse(unexpectedObject, ""), position);
+            case ERROR_UNEXPECTED_TOKEN -> String.format("Unexpected token %s at position %d.", Objects.requireNonNullElse(unexpectedObject, ""), position);
+            case ERROR_UNEXPECTED_EXCEPTION -> String.format("Unexpected exception at position %d: %s", position, Objects.requireNonNullElse(unexpectedObject, ""));
+            default -> String.format("Unknown error at position %d.", position);
+        };
     }
 }

@@ -4,6 +4,9 @@
  */
 package org.json.simple.parser;
 
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
 /**
  * @author FangYidong<fangyidong@yahoo.com.cn>
  * @author l_MrBoom_l<admin@epserv.ru>
@@ -19,32 +22,26 @@ public class Yytoken {
     public static final int TYPE_EOF = -1;//end of file
 
     public int type;
+    @Nullable
     public Object value;
 
-    public Yytoken(int type, Object value) {
+    public Yytoken(int type, @Nullable Object value) {
         this.type = type;
         this.value = value;
     }
 
+    @NotNull
     public String toString() {
-        switch (type) {
-            case TYPE_VALUE:
-                return "VALUE(" + value + ")";
-            case TYPE_LEFT_BRACE:
-                return "LEFT BRACE({)";
-            case TYPE_RIGHT_BRACE:
-                return "RIGHT BRACE(})";
-            case TYPE_LEFT_SQUARE:
-                return "LEFT SQUARE([)";
-            case TYPE_RIGHT_SQUARE:
-                return "RIGHT SQUARE(])";
-            case TYPE_COMMA:
-                return "COMMA(,)";
-            case TYPE_COLON:
-                return "COLON(:)";
-            case TYPE_EOF:
-                return "END OF FILE";
-        }
-        return "";
+        return switch (type) {
+            case TYPE_VALUE -> "VALUE(" + value + ")";
+            case TYPE_LEFT_BRACE -> "LEFT BRACE({)";
+            case TYPE_RIGHT_BRACE -> "RIGHT BRACE(})";
+            case TYPE_LEFT_SQUARE -> "LEFT SQUARE([)";
+            case TYPE_RIGHT_SQUARE -> "RIGHT SQUARE(])";
+            case TYPE_COMMA -> "COMMA(,)";
+            case TYPE_COLON -> "COLON(:)";
+            case TYPE_EOF -> "END OF FILE";
+            default -> "";
+        };
     }
 }

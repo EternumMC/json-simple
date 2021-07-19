@@ -1,5 +1,7 @@
 package org.json.simple;
 
+import org.jetbrains.annotations.NotNull;
+
 /**
  * Beans that support customized output of JSON text shall implement this interface.
  *
@@ -10,5 +12,6 @@ public interface JSONAware {
     /**
      * @return JSON text
      */
+    @NotNull
     String toJSONString();
 }

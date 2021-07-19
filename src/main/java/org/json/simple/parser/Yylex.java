@@ -2,6 +2,10 @@
 
 package org.json.simple.parser;
 
+import org.jetbrains.annotations.Nullable;
+
+import java.io.Reader;
+
 class Yylex {
 
     /**
@@ -23,9 +27,7 @@ class Yylex {
      * at the beginning of a line
      * l is of the form l = 2*k, k a non negative integer
      */
-    private static final int[] ZZ_LEXSTATE = {
-            0, 0, 1, 1
-    };
+    private static final int[] ZZ_LEXSTATE = { 0, 0, 1, 1 };
 
     /**
      * Translates characters to character classes
@@ -156,7 +158,7 @@ class Yylex {
     /**
      * the input device
      */
-    private java.io.Reader zzReader;
+    private Reader zzReader;
     /**
      * the current lexical state
      */
@@ -200,7 +202,7 @@ class Yylex {
      *
      * @param in the java.io.Reader to read input from.
      */
-    Yylex(java.io.Reader in) {
+    Yylex(Reader in) {
         this.zzReader = in;
     }
 
@@ -330,7 +332,7 @@ class Yylex {
      *
      * @param reader the new input stream
      */
-    public final void yyreset(java.io.Reader reader) {
+    public final void yyreset(Reader reader) {
         zzReader = reader;
         zzAtEOF  = false;
         zzEndRead = zzStartRead = 0;
@@ -438,6 +440,7 @@ class Yylex {
      * @return the next token
      * @throws java.io.IOException if any I/O-Error occurs
      */
+    @Nullable
     public Yytoken yylex() throws java.io.IOException, ParseException {
         int zzInput;
         int zzAction;

@@ -1,5 +1,7 @@
 package org.json.simple.parser;
 
+import org.jetbrains.annotations.Nullable;
+
 import java.io.IOException;
 
 /**
@@ -8,7 +10,7 @@ import java.io.IOException;
  * @author FangYidong<fangyidong@yahoo.com.cn>
  * @author l_MrBoom_l<admin@epserv.ru>
  * @see org.xml.sax.ContentHandler
- * @see org.json.simple.parser.JSONParser#parse(java.io.Reader, ContentHandler, boolean)
+ * @see org.json.simple.parser.JSONParser#parse(java.io.Reader, org.json.simple.parser.ContentHandler, boolean)
  */
 public interface ContentHandler {
     /**
@@ -88,6 +90,6 @@ public interface ContentHandler {
      *              null
      * @return false if the handler wants to stop parsing after return.
      */
-    boolean primitive(Object value) throws ParseException, IOException;
+    boolean primitive(@Nullable Object value) throws ParseException, IOException;
 
 }

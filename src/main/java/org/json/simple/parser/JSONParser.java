@@ -4,6 +4,8 @@
  */
 package org.json.simple.parser;
 
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
@@ -35,10 +37,8 @@ public class JSONParser {
     private Yytoken token = null;
     private int status = S_INIT;
 
-    private int peekStatus(LinkedList<Integer> statusStack) {
-        if (statusStack.size() == 0)
-            return -1;
-        return statusStack.getFirst();
+    private int peekStatus(@NotNull LinkedList<Integer> statusStack) {
+        return statusStack.size() == 0 ? -1 : statusStack.getFirst();
     }
 
     /**
@@ -53,9 +53,9 @@ public class JSONParser {
     /**
      * Reset the parser to the initial state with a new character reader.
      *
-     * @param in - The new character reader.
+     * @param in The new character reader.
      */
-    public void reset(Reader in) {
+    public void reset(@Nullable Reader in) {
         lexer.yyreset(in);
         reset();
     }
@@ -67,11 +67,23 @@ public class JSONParser {
         return lexer.getPosition();
     }
 
-    public Object parse(String s) throws ParseException {
+    @NotNull
+    public JSONArray array(@NotNull String s) throws ParseException {
+        return (JSONArray) parse(s);
+    }
+
+    @NotNull
+    public JSONObject object(@NotNull String s) throws ParseException {
+        return (JSONObject) parse(s);
+    }
+
+    @NotNull
+    public Object parse(@NotNull String s) throws ParseException {
         return parse(s, (ContainerFactory) null);
     }
 
-    public Object parse(String s, ContainerFactory containerFactory) throws ParseException {
+    @NotNull
+    public Object parse(@NotNull String s, @Nullable ContainerFactory containerFactory) throws ParseException {
         StringReader in = new StringReader(s);
         try {
             return parse(in, containerFactory);
@@ -83,15 +95,16 @@ public class JSONParser {
         }
     }
 
-    public Object parse(Reader in) throws IOException, ParseException {
+    @NotNull
+    public Object parse(@NotNull Reader in) throws IOException, ParseException {
         return parse(in, (ContainerFactory) null);
     }
 
     /**
      * Parse JSON text into java object from the input source.
      *
-     * @param in               - Reader to use
-     * @param containerFactory - Use this factory to create your own JSON object and JSON array containers.
+     * @param in Reader to use
+     * @param containerFactory Use this factory to create your own JSON object and JSON array containers.
      * @return Instance of the following:
      * org.json.simple.JSONObject,
      * org.json.simple.JSONArray,
@@ -101,7 +114,8 @@ public class JSONParser {
      * null
      */
     @SuppressWarnings("unchecked")
-    public Object parse(Reader in, ContainerFactory containerFactory) throws IOException, ParseException {
+    @NotNull
+    public Object parse(@NotNull Reader in, @Nullable ContainerFactory containerFactory) throws IOException, ParseException {
         reset(in);
         LinkedList<Integer> statusStack = new LinkedList<>();
         LinkedList<Object> valueStack = new LinkedList<>();
@@ -111,23 +125,22 @@ public class JSONParser {
             switch (status) {
                 case S_INIT:
                     switch (token.type) {
-                        case Yytoken.TYPE_VALUE:
+                        case Yytoken.TYPE_VALUE -> {
                             status = S_IN_FINISHED_VALUE;
                             statusStack.addFirst(status);
                             valueStack.addFirst(token.value);
-                            break;
-                        case Yytoken.TYPE_LEFT_BRACE:
+                        }
+                        case Yytoken.TYPE_LEFT_BRACE -> {
                             status = S_IN_OBJECT;
                             statusStack.addFirst(status);
                             valueStack.addFirst(createObjectContainer(containerFactory));
-                            break;
-                        case Yytoken.TYPE_LEFT_SQUARE:
+                        }
+                        case Yytoken.TYPE_LEFT_SQUARE -> {
                             status = S_IN_ARRAY;
                             statusStack.addFirst(status);
                             valueStack.addFirst(createArrayContainer(containerFactory));
-                            break;
-                        default:
-                            status = S_IN_ERROR;
+                        }
+                        default -> status = S_IN_ERROR;
                     }//inner switch
                     break;
 
@@ -141,8 +154,7 @@ public class JSONParser {
                         case Yytoken.TYPE_COMMA:
                             break;
                         case Yytoken.TYPE_VALUE:
-                            if (token.value instanceof String) {
-                                String key = (String) token.value;
+                            if (token.value instanceof String key) {
                                 valueStack.addFirst(key);
                                 status = S_PASSED_PAIR_KEY;
                                 statusStack.addFirst(status);
@@ -249,37 +261,35 @@ public class JSONParser {
         throw new ParseException(getPosition(), ParseException.ERROR_UNEXPECTED_TOKEN, token);
     }
 
-    private void nextToken() throws ParseException, IOException {
+    private void nextToken() throws IOException, ParseException {
         token = lexer.yylex();
         if (token == null)
             token = new Yytoken(Yytoken.TYPE_EOF, null);
     }
 
-    private Map<Object, Object> createObjectContainer(ContainerFactory containerFactory) {
+    @NotNull
+    private Map<Object, Object> createObjectContainer(@Nullable ContainerFactory containerFactory) {
         if (containerFactory == null)
             return new JSONObject();
         Map<Object, Object> m = containerFactory.createObjectContainer();
 
-        if (m == null)
-            return new JSONObject();
-        return m;
+        return m == null ? new JSONObject() : m;
     }
 
-    private List<?> createArrayContainer(ContainerFactory containerFactory) {
+    @NotNull
+    private List<?> createArrayContainer(@Nullable ContainerFactory containerFactory) {
         if (containerFactory == null)
             return new JSONArray();
         List<?> l = containerFactory.createArrayContainer();
 
-        if (l == null)
-            return new JSONArray();
-        return l;
+        return l == null ? new JSONArray() : l;
     }
 
-    public void parse(String s, ContentHandler contentHandler) throws ParseException {
+    public void parse(@NotNull String s, @NotNull ContentHandler contentHandler) throws ParseException {
         parse(s, contentHandler, false);
     }
 
-    public void parse(String s, ContentHandler contentHandler, boolean isResume) throws ParseException {
+    public void parse(@NotNull String s, @NotNull ContentHandler contentHandler, boolean isResume) throws ParseException {
         StringReader in = new StringReader(s);
         try {
             parse(in, contentHandler, isResume);
@@ -291,21 +301,21 @@ public class JSONParser {
         }
     }
 
-    public void parse(Reader in, ContentHandler contentHandler) throws IOException, ParseException {
+    public void parse(@NotNull Reader in, @NotNull ContentHandler contentHandler) throws IOException, ParseException {
         parse(in, contentHandler, false);
     }
 
     /**
      * Stream processing of JSON text.
      *
-     * @param in             Reader to use
+     * @param in Reader to use
      * @param contentHandler {@link ContentHandler} to use
-     * @param isResume       - Indicates if it continues previous parsing operation.
-     *                       If set to true, resume parsing the old stream, and parameter 'in' will be ignored.
-     *                       If this method is called for the first time in this instance, isResume will be ignored.
+     * @param isResume Indicates if it continues previous parsing operation. If set to true, resume parsing the old
+     *                 stream, and parameter 'in' will be ignored. If this method is called for the first time in this
+     *                 instance, isResume will be ignored.
      * @see ContentHandler
      */
-    public void parse(Reader in, ContentHandler contentHandler, boolean isResume) throws IOException, ParseException {
+    public void parse(@NotNull Reader in, @NotNull ContentHandler contentHandler, boolean isResume) throws IOException, ParseException {
         if (!isResume) {
             reset(in);
             handlerStatusStack = new LinkedList<>();
@@ -325,26 +335,25 @@ public class JSONParser {
                         contentHandler.startJSON();
                         nextToken();
                         switch (token.type) {
-                            case Yytoken.TYPE_VALUE:
+                            case Yytoken.TYPE_VALUE -> {
                                 status = S_IN_FINISHED_VALUE;
                                 statusStack.addFirst(status);
                                 if (!contentHandler.primitive(token.value))
                                     return;
-                                break;
-                            case Yytoken.TYPE_LEFT_BRACE:
+                            }
+                            case Yytoken.TYPE_LEFT_BRACE -> {
                                 status = S_IN_OBJECT;
                                 statusStack.addFirst(status);
                                 if (!contentHandler.startObject())
                                     return;
-                                break;
-                            case Yytoken.TYPE_LEFT_SQUARE:
+                            }
+                            case Yytoken.TYPE_LEFT_SQUARE -> {
                                 status = S_IN_ARRAY;
                                 statusStack.addFirst(status);
                                 if (!contentHandler.startArray())
                                     return;
-                                break;
-                            default:
-                                status = S_IN_ERROR;
+                            }
+                            default -> status = S_IN_ERROR;
                         }//inner switch
                         break;
 
@@ -365,8 +374,7 @@ public class JSONParser {
                             case Yytoken.TYPE_COMMA:
                                 break;
                             case Yytoken.TYPE_VALUE:
-                                if (token.value instanceof String) {
-                                    String key = (String) token.value;
+                                if (token.value instanceof String key) {
                                     status = S_PASSED_PAIR_KEY;
                                     statusStack.addFirst(status);
                                     if (!contentHandler.startObjectEntry(key))

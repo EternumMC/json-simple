@@ -4,6 +4,8 @@
  */
 package org.json.simple;
 
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
@@ -29,16 +31,16 @@ public class JSONValue {
      * java.lang.Number,
      * java.lang.Boolean,
      * null
-     * @see org.json.simple.parser.JSONParser#parse(Reader)
+     * @see JSONParser#parse(Reader)
      * @see #parseWithException(Reader)
      * @deprecated this method may throw an {@code Error} instead of returning
-     * {@code null}; please use {@link JSONValue#parseWithException(Reader)}
+     * {@code null}; please use {@link org.json.simple.JSONValue#parseWithException(Reader)}
      * instead
      */
-    public static Object parse(Reader in) {
+    @Nullable
+    public static Object parse(@NotNull Reader in) {
         try {
-            JSONParser parser = new JSONParser();
-            return parser.parse(in);
+            return new JSONParser().parse(in);
         } catch (Exception e) {
             return null;
         }
@@ -56,15 +58,15 @@ public class JSONValue {
      * java.lang.Number,
      * java.lang.Boolean,
      * null
-     * @see org.json.simple.parser.JSONParser#parse(Reader)
+     * @see JSONParser#parse(Reader)
      * @see #parseWithException(Reader)
      * @deprecated this method may throw an {@code Error} instead of returning
-     * {@code null}; please use {@link JSONValue#parseWithException(String)}
+     * {@code null}; please use {@link org.json.simple.JSONValue#parseWithException(String)}
      * instead
      */
+    @Nullable
     public static Object parse(String s) {
-        StringReader in = new StringReader(s);
-        return parse(in);
+        return parse(new StringReader(s));
     }
 
     /**
@@ -80,16 +82,15 @@ public class JSONValue {
      * null
      * @throws IOException    when {@link IOException} happens
      * @throws ParseException when parsing fails
-     * @see org.json.simple.parser.JSONParser
+     * @see JSONParser
      */
-    public static Object parseWithException(Reader in) throws IOException, ParseException {
-        JSONParser parser = new JSONParser();
-        return parser.parse(in);
+    @NotNull
+    public static Object parseWithException(@NotNull Reader in) throws IOException, ParseException {
+        return new JSONParser().parse(in);
     }
 
     public static Object parseWithException(String s) throws ParseException {
-        JSONParser parser = new JSONParser();
-        return parser.parse(s);
+        return new JSONParser().parse(s);
     }
 
     /**
@@ -102,111 +103,110 @@ public class JSONValue {
      *
      * @param value Value to represent as JSON string
      * @param out   Writer to write to
-     * @see org.json.simple.JSONObject#writeJSONString(Map, Writer)
-     * @see org.json.simple.JSONArray#writeJSONString(Collection, Writer)
+     * @see JSONObject#writeJSONString(Map, Writer)
+     * @see JSONArray#writeJSONString(Collection, Writer)
      */
-    @SuppressWarnings("unchecked")
-    public static void writeJSONString(Object value, Writer out) throws IOException {
+    public static void writeJSONString(@Nullable Object value, @NotNull Writer out) throws IOException {
         if (value == null) {
             out.write("null");
             return;
         }
 
-        if (value instanceof String) {
+        if (value instanceof String s) {
             out.write('\"');
-            out.write(escape((String) value));
+            out.write(escape(s));
             out.write('\"');
             return;
         }
 
-        if (value instanceof Double) {
-            if (((Double) value).isInfinite() || ((Double) value).isNaN())
+        if (value instanceof Double d) {
+            if (d.isInfinite() || d.isNaN())
                 out.write("null");
             else
                 out.write(value.toString());
             return;
         }
 
-        if (value instanceof Float) {
-            if (((Float) value).isInfinite() || ((Float) value).isNaN())
+        if (value instanceof Float f) {
+            if (f.isInfinite() || f.isNaN())
                 out.write("null");
             else
                 out.write(value.toString());
             return;
         }
 
-        if (value instanceof Number) {
-            out.write(value.toString());
+        if (value instanceof Number n) {
+            out.write(n.toString());
             return;
         }
 
-        if (value instanceof Boolean) {
-            out.write(value.toString());
+        if (value instanceof Boolean b) {
+            out.write(b.toString());
             return;
         }
 
-        if ((value instanceof JSONStreamAware)) {
-            ((JSONStreamAware) value).writeJSONString(out);
+        if (value instanceof JSONStreamAware aware) {
+            aware.writeJSONString(out);
             return;
         }
 
-        if ((value instanceof JSONAware)) {
-            out.write(((JSONAware) value).toJSONString());
+        if (value instanceof JSONAware aware) {
+            out.write(aware.toJSONString());
             return;
         }
 
-        if (value instanceof Map) {
-            JSONObject.writeJSONString((Map<Object, Object>) value, out);
+        if (value instanceof Map<?, ?> m) {
+            JSONObject.writeJSONString(m, out);
             return;
         }
 
-        if (value instanceof Collection) {
-            JSONArray.writeJSONString((Collection<Object>) value, out);
+        if (value instanceof Collection<?> c) {
+            JSONArray.writeJSONString(c, out);
             return;
         }
 
-        if (value instanceof byte[]) {
-            JSONArray.writeJSONString((byte[]) value, out);
+        if (value instanceof byte[] bytes) {
+            JSONArray.writeJSONString(bytes, out);
             return;
         }
 
-        if (value instanceof short[]) {
-            JSONArray.writeJSONString((short[]) value, out);
+        if (value instanceof short[] shorts) {
+            JSONArray.writeJSONString(shorts, out);
             return;
         }
 
-        if (value instanceof int[]) {
-            JSONArray.writeJSONString((int[]) value, out);
+        if (value instanceof int[] ints) {
+            JSONArray.writeJSONString(ints, out);
             return;
         }
 
-        if (value instanceof long[]) {
-            JSONArray.writeJSONString((long[]) value, out);
+        if (value instanceof long[] longs) {
+            JSONArray.writeJSONString(longs, out);
             return;
         }
 
-        if (value instanceof float[]) {
-            JSONArray.writeJSONString((float[]) value, out);
+        if (value instanceof float[] floats) {
+            JSONArray.writeJSONString(floats, out);
             return;
         }
 
-        if (value instanceof double[]) {
-            JSONArray.writeJSONString((double[]) value, out);
+        if (value instanceof double[] doubles) {
+            JSONArray.writeJSONString(doubles, out);
             return;
         }
 
-        if (value instanceof boolean[]) {
-            JSONArray.writeJSONString((boolean[]) value, out);
+        if (value instanceof boolean[] booleans) {
+            JSONArray.writeJSONString(booleans, out);
             return;
         }
 
-        if (value instanceof char[]) {
-            JSONArray.writeJSONString((char[]) value, out);
+        if (value instanceof char[] chars) {
+            JSONArray.writeJSONString(chars, out);
             return;
         }
 
-        if (value instanceof Object[]) {
-            JSONArray.writeJSONString((Object[]) value, out);
+        if (value instanceof Object[] objects) {
+            JSONArray.writeJSONString(objects, out);
             return;
         }
 
@@ -223,10 +223,11 @@ public class JSONValue {
      *
      * @param value Value to represent as JSON string
      * @return JSON text, or "null" if value is null or it's an NaN or an INF number.
-     * @see org.json.simple.JSONObject#toJSONString(Map)
-     * @see org.json.simple.JSONArray#toJSONString(Collection)
+     * @see JSONObject#toJSONString(Map)
+     * @see JSONArray#toJSONString(Collection)
      */
-    public static String toJSONString(Object value) {
+    @NotNull
+    public static String toJSONString(@Nullable Object value) {
         final StringWriter writer = new StringWriter();
 
         try {
@@ -244,9 +245,10 @@ public class JSONValue {
      * @param s {@link String} to be JSON-escaped
      * @return JSON-escaped string
      */
-    public static String escape(String s) {
+    @NotNull
+    public static String escape(@Nullable String s) {
         if (s == null)
-            return null;
+            return "null";
         StringBuilder sb = new StringBuilder();
         escape(s, sb);
         return sb.toString();
@@ -256,7 +258,7 @@ public class JSONValue {
      * @param s  - Must not be null.
      * @param sb {@link StringBuilder} to write escaped string to
      */
-    static void escape(String s, StringBuilder sb) {
+    static void escape(@NotNull String s, @NotNull StringBuilder sb) {
         final int len = s.length();
         for (int i = 0; i < len; i++) {
             char ch = s.charAt(i);
