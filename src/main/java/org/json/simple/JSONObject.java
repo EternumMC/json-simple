@@ -150,7 +150,7 @@ public class JSONObject extends HashMap<Object, Object> implements Map<Object, O
         return value == null ? def : value;
     }
 
-    @NotNull
+    @Nullable
     public String getString(@NotNull String key) {
         return string(this.get(key));
     }
@@ -160,27 +160,27 @@ public class JSONObject extends HashMap<Object, Object> implements Map<Object, O
     }
 
     public byte getByte(@NotNull String key) {
-        return Byte.parseByte(this.getString(key));
+        return Byte.parseByte(this.getString(key, "0"));
     }
 
     public short getShort(@NotNull String key) {
-        return Short.parseShort(this.getString(key));
+        return Short.parseShort(this.getString(key, "0"));
     }
 
     public int getInt(@NotNull String key) {
-        return Integer.parseInt(this.getString(key));
+        return Integer.parseInt(this.getString(key, "0"));
     }
 
     public long getLong(@NotNull String key) {
-        return Long.parseLong(this.getString(key));
+        return Long.parseLong(this.getString(key, "0"));
     }
 
     public float getFloat(@NotNull String key) {
-        return Float.parseFloat(this.getString(key));
+        return Float.parseFloat(this.getString(key, "0.0"));
     }
 
     public double getDouble(@NotNull String key) {
-        return Double.parseDouble(this.getString(key));
+        return Double.parseDouble(this.getString(key, "0.0"));
     }
 
 
@@ -196,32 +196,32 @@ public class JSONObject extends HashMap<Object, Object> implements Map<Object, O
 
     public byte getByte(@NotNull String key, byte def) {
         Object value = this.getOrDefault(key, def);
-        return value instanceof Byte b ? b : Byte.parseByte(string(value));
+        return value instanceof Byte b ? b : Byte.parseByte(Objects.requireNonNullElse(string(value), "null"));
     }
 
     public short getShort(@NotNull String key, short def) {
         Object value = this.getOrDefault(key, def);
-        return value instanceof Short s ? s : Short.parseShort(string(value));
+        return value instanceof Short s ? s : Short.parseShort(Objects.requireNonNullElse(string(value), "null"));
     }
 
     public int getInt(@NotNull String key, int def) {
         Object value = this.getOrDefault(key, def);
-        return value instanceof Integer i ? i : Integer.parseInt(string(value));
+        return value instanceof Integer i ? i : Integer.parseInt(Objects.requireNonNullElse(string(value), "null"));
     }
 
     public long getLong(@NotNull String key, long def) {
         Object value = this.getOrDefault(key, def);
-        return value instanceof Long l ? l : Long.parseLong(string(value));
+        return value instanceof Long l ? l : Long.parseLong(Objects.requireNonNullElse(string(value), "null"));
     }
 
     public float getFloat(@NotNull String key, float def) {
         Object value = this.getOrDefault(key, def);
-        return value instanceof Float f ? f : Float.parseFloat(string(value));
+        return value instanceof Float f ? f : Float.parseFloat(Objects.requireNonNullElse(string(value), "null"));
     }
 
     public double getDouble(@NotNull String key, double def) {
         Object value = this.getOrDefault(key, def);
-        return value instanceof Double d ? d : Double.parseDouble(string(value));
+        return value instanceof Double d ? d : Double.parseDouble(Objects.requireNonNullElse(string(value), "null"));
     }
 
     @Nullable
@@ -248,9 +248,9 @@ public class JSONObject extends HashMap<Object, Object> implements Map<Object, O
         return this.get(key) == null;
     }
 
-    @NotNull
+    @Nullable
     private String string(@Nullable Object object) {
-        return Objects.requireNonNullElse(String.valueOf(object), "null");
+        return String.valueOf(object);
     }
 
 }

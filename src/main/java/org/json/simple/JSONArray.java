@@ -6,15 +6,16 @@ package org.json.simple;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.Unmodifiable;
+import org.jetbrains.annotations.UnmodifiableView;
 
 import java.io.IOException;
 import java.io.Serial;
 import java.io.StringWriter;
 import java.io.Writer;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Iterator;
+import java.util.*;
+import java.util.function.Predicate;
+import java.util.function.UnaryOperator;
 
 /**
  * A JSON array. JSONObject supports java.util.List interface.
@@ -41,6 +42,15 @@ public class JSONArray extends ArrayList<Object> implements JSONAware, JSONStrea
      */
     public JSONArray(@NotNull Collection<?> c) {
         super(c);
+    }
+
+    /**
+     * Constructs a JSONArray containing the specified elements.
+     *
+     * @param elements the elements are to be placed into this JSONArray
+     */
+    public JSONArray(@NotNull Object... elements) {
+        Collections.addAll(this, elements);
     }
 
     /**
@@ -396,38 +406,37 @@ public class JSONArray extends ArrayList<Object> implements JSONAware, JSONStrea
         return toJSONString();
     }
 
-    @NotNull
+    @Nullable
     public String getString(int index) {
-        String str = String.valueOf(this.get(index));
-        return str == null ? "null" : str;
+        return String.valueOf(this.get(index));
     }
 
     public boolean getBoolean(int index) {
-        return Boolean.parseBoolean(this.get(index).toString());
+        return Boolean.parseBoolean(this.getString(index));
     }
 
     public byte getByte(int index) {
-        return Byte.parseByte(this.get(index).toString());
+        return Byte.parseByte(Objects.requireNonNullElse(this.getString(index), "null"));
     }
 
     public short getShort(int index) {
-        return Short.parseShort(this.get(index).toString());
+        return Short.parseShort(Objects.requireNonNullElse(this.getString(index), "null"));
     }
 
     public int getInt(int index) {
-        return Integer.parseInt(this.get(index).toString());
+        return Integer.parseInt(Objects.requireNonNullElse(this.getString(index), "null"));
     }
 
     public long getLong(int index) {
-        return Long.parseLong(this.get(index).toString());
+        return Long.parseLong(Objects.requireNonNullElse(this.getString(index), "null"));
     }
 
     public float getFloat(int index) {
-        return Float.parseFloat(this.get(index).toString());
+        return Float.parseFloat(Objects.requireNonNullElse(this.getString(index), "null"));
     }
 
     public double getDouble(int index) {
-        return Double.parseDouble(this.get(index).toString());
+        return Double.parseDouble(Objects.requireNonNullElse(this.getString(index), "null"));
     }
 
     @Nullable
@@ -440,11 +449,49 @@ public class JSONArray extends ArrayList<Object> implements JSONAware, JSONStrea
         return (JSONArray) this.get(index);
     }
 
-    @SafeVarargs
-    public static <E> JSONArray of(E... elements) {
-        JSONArray jsonArray = new JSONArray();
-        Collections.addAll(jsonArray, elements);
-        return jsonArray;
+    @Unmodifiable
+    public static JSONArray of() {
+        return new UnmodifiableJSONArray();
+    }
+
+    @UnmodifiableView
+    public static JSONArray of(Object... elements) {
+        return new UnmodifiableJSONArray(elements);
+    }
+
+    private static final class UnmodifiableJSONArray extends JSONArray {
+
+        protected UnmodifiableJSONArray(Object... elements) { super(Arrays.asList(elements)); }
+
+        @Override
+        public boolean add(Object o) { throw new UnsupportedOperationException(); }
+        @Override
+        public boolean addAll(Collection<?> c) { throw new UnsupportedOperationException(); }
+        @Override
+        public void clear() { throw new UnsupportedOperationException(); }
+        @Override
+        public boolean remove(Object o) { throw new UnsupportedOperationException(); }
+        @Override
+        public boolean removeAll(Collection<?> c) { throw new UnsupportedOperationException(); }
+        @Override
+        public boolean removeIf(Predicate<? super Object> filter) { throw new UnsupportedOperationException(); }
+        @Override
+        public boolean retainAll(Collection<?> c) { throw new UnsupportedOperationException(); }
+
+        @Override
+        public void add(int index, Object o) { throw new UnsupportedOperationException(); }
+        @Override
+        public boolean addAll(int index, Collection<?> c) { throw new UnsupportedOperationException(); }
+        @Override
+        public Object remove(int index) { throw new UnsupportedOperationException(); }
+        @Override
+        public void replaceAll(UnaryOperator<Object> operator) { throw new UnsupportedOperationException(); }
+        @Override
+        public Object set(int index, Object o) {
+            throw new UnsupportedOperationException();
+        }
+        @Override
+        public void sort(Comparator<? super Object> c) { throw new UnsupportedOperationException(); }
     }
 
 }
