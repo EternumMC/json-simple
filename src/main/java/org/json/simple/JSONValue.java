@@ -210,7 +210,18 @@ public class JSONValue {
             return;
         }
 
-        out.write(value.toString());
+        String str = value.toString();
+
+        try {
+            // check if value.toString() returned a valid json value
+            new JSONParser().parse(str);
+            out.write(str);
+        } catch (ParseException ex) {
+            // json value is invalid so we need to escape it to prevent from generating malformed json
+            out.write('\"');
+            out.write(escape(str));
+            out.write('\"');
+        }
     }
 
     /**

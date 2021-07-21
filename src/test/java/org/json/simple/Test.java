@@ -84,16 +84,13 @@ public class Test extends TestCase{
 		catch(ParseException pe){
 			assertEquals(24, pe.getPosition());
 			System.out.println("Error at character position: " + pe.getPosition());
-			switch(pe.getErrorType()){
-			case ParseException.ERROR_UNEXPECTED_TOKEN:
-				System.out.println("Unexpected token: " + pe.getUnexpectedObject());
-				break;
-			case ParseException.ERROR_UNEXPECTED_CHAR:
-				System.out.println("Unexpected character: " + pe.getUnexpectedObject());
-				break;
-			case ParseException.ERROR_UNEXPECTED_EXCEPTION:
-				((Exception)pe.getUnexpectedObject()).printStackTrace();
-				break;
+			switch (pe.getErrorType()) {
+				case ParseException.ERROR_UNEXPECTED_TOKEN -> System.out.println("Unexpected token: " + pe.getUnexpectedObject());
+				case ParseException.ERROR_UNEXPECTED_CHAR -> System.out.println("Unexpected character: " + pe.getUnexpectedObject());
+				case ParseException.ERROR_UNEXPECTED_EXCEPTION -> {
+					if (pe.getUnexpectedObject() != null && pe.getUnexpectedObject() instanceof Exception ex)
+						ex.printStackTrace();
+				}
 			}
 		}
 
