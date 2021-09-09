@@ -14,8 +14,8 @@ import java.io.Serial;
 import java.io.StringWriter;
 import java.io.Writer;
 import java.util.*;
-import java.util.function.Predicate;
-import java.util.function.UnaryOperator;
+import java.util.function.*;
+import java.util.stream.Collector;
 
 /**
  * A JSON array. JSONObject supports java.util.List interface.
@@ -461,7 +461,7 @@ public class JSONArray extends ArrayList<Object> implements JSONAware, JSONStrea
 
     private static final class UnmodifiableJSONArray extends JSONArray {
 
-        protected UnmodifiableJSONArray(Object... elements) { super(Arrays.asList(elements)); }
+        private UnmodifiableJSONArray(Object... elements) { super(Arrays.asList(elements)); }
 
         @Override
         public boolean add(Object o) { throw new UnsupportedOperationException(); }
@@ -492,6 +492,48 @@ public class JSONArray extends ArrayList<Object> implements JSONAware, JSONStrea
         }
         @Override
         public void sort(Comparator<? super Object> c) { throw new UnsupportedOperationException(); }
+    }
+
+    public static Collector<Object, JSONArray, JSONArray> collector() {
+        return new JSONArrayCollector();
+    }
+
+    private static class JSONArrayCollector implements Collector<Object, JSONArray, JSONArray> {
+        private static final BinaryOperator<JSONArray> combiner = (left, right) -> {
+            if (left.size() < right.size()) {
+                right.addAll(left);
+                return right;
+            } else {
+                left.addAll(right);
+                return left;
+            }
+        };
+        private static final Set<Characteristics> characteristics = Collections.unmodifiableSet(EnumSet.of(Collector.Characteristics.UNORDERED));
+
+        @Override
+        public Supplier<JSONArray> supplier() {
+            return JSONArray::new;
+        }
+
+        @Override
+        public BiConsumer<JSONArray, Object> accumulator() {
+            return JSONArray::add;
+        }
+
+        @Override
+        public BinaryOperator<JSONArray> combiner() {
+            return combiner;
+        }
+
+        @Override
+        public Function<JSONArray, JSONArray> finisher() {
+            return JSONArray.class::cast;
+        }
+
+        @Override
+        public Set<Characteristics> characteristics() {
+            return characteristics;
+        }
     }
 
 }
