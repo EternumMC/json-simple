@@ -12,10 +12,10 @@ import java.io.IOException;
 import java.io.Serial;
 import java.io.StringWriter;
 import java.io.Writer;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Objects;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * A JSON object. Key value pairs are unordered. JSONObject supports java.util.Map interface.
@@ -23,7 +23,7 @@ import java.util.Objects;
  * @author FangYidong<fangyidong@yahoo.com.cn>
  * @author l_MrBoom_l<admin@epserv.ru>
  */
-public class JSONObject extends HashMap<Object, Object> implements Map<Object, Object>, JSONAware, JSONStreamAware {
+public class JSONObject extends ConcurrentHashMap<Object, Object> implements Map<Object, Object>, JSONAware, JSONStreamAware {
 
     @Serial
     private static final long serialVersionUID = -503443796854799292L;
